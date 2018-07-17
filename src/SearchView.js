@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './App.css'
+import Book from './Book';
 
 class SearchView extends Component {
 
