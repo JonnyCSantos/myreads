@@ -1,16 +1,52 @@
 import React from 'react'
-// import * as BooksAPI from './BooksAPI'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
+import SearchView from './SearchView'
+import Book from './Book'
 
 class BooksApp extends React.Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false
+    books: [],
+    searchingFor: []
+  }
+
+  componentDidMount(){
+    BooksAPI.getAll().then((books) => {
+      this.setState({ books });
+      });
+    }
+
+  updateBookNow(bookID, event) {
+    let newListOfBooks = BooksAPI.update(bookID, event.target.value)
+    let booksbooksbooks = newListOfBooks.then(BooksAPI.getAll().then((books) => {this.setState({books: books})}))
+  }
+
+  searchFunctionality(event){
+    if (event.target.value !== '') {
+      BooksAPI.search(event.target.value).then((results) => {
+        if (results.error) {
+          this.setState({ searchingFor: [] });
+        }
+        else if (results) {
+          results.map(result => {
+            if (result.shelf === undefined) {
+              result.shelf = 'none';
+            }
+            if (result.imageLinks === undefined) {
+              result.imageLinks = `url(https://dummyimage.com/128x193/292929/e3e3e3&text=No)`;
+            }
+            let filteredResults = this.state.books.forEach(book => {
+              if (book.id === result.id) {
+                result.shelf = book.shelf;
+              }
+            });
+          });
+          this.setState({ searchingFor: results });
+        }
+      });
+    } else if (event.target.value === '') {
+      this.setState({ searchingFor: [] });
+    }
   }
 
   render() {
@@ -194,7 +230,7 @@ class BooksApp extends React.Component {
               </div>
             </div>
             <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+              <a to='/search'>Add a book</a>
             </div>
           </div>
         )}
