@@ -69,7 +69,7 @@ class BooksApp extends React.Component {
         <div>
           <SearchView
               onChangeCategory={this.changeCategory}
-              books = {this.state.filteredBooks}
+              books = {books}
           />
         </div>
       )}/>

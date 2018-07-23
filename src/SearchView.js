@@ -14,29 +14,31 @@ class SearchView extends Component {
         this.setState({query})
             if(query){
                 BooksAPI.search(query)
-                    .then((books) => { 
-                        if(books.error) {
+                    .then((response) => { 
+                        if(response.error) {
                             console.log('Erro!');
                             this.setState({filteredBooks: []})
                         } else {
                             console.log('Sem erro')
-                            console.log(books)
-                            
-                            const {booksApp} = this.state
-                            
+                            const {books} = this.props
                             this.setState({
-                                filteredBooks: books.filter(b => {
-                                    if (b.id === booksApp.id) {
-                                        this.setState(b.shelf = booksApp.shelf)
-                                    }else {
-                                        this.setState(b.shelf = 'none')
+                                filteredBooks: response.map(book => { 
+                                    const exists = books.find(b => b.id === book.id); 
+                                    if (exists) { 
+                                        book.shelf = exists.shelf; 
+                                    } else {
+                                        book.shelf = 'none'; 
                                     }
-                                }
-                                )
+                                    return book; 
+                                  })
                             });
                         }
                     }
             )
+        } else {
+            this.setState({
+                filteredBooks: []
+            })
         }
     }
     
