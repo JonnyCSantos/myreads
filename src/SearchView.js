@@ -27,9 +27,9 @@ class SearchView extends Component {
                             this.setState({
                                 filteredBooks: books.filter(b => {
                                     if (b.id === booksApp.id) {
-                                        b.shelf = booksApp.shelf
+                                        this.setState(b.shelf = booksApp.shelf)
                                     }else {
-                                        b.shelf = 'none'
+                                        this.setState(b.shelf = 'none')
                                     }
                                 }
                                 )
