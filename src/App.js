@@ -32,24 +32,19 @@ class BooksApp extends React.Component {
       });
     }
 
-  updateBookNow(bookID, event) {
-    let newListOfBooks = BooksAPI.update(bookID, event.target.value)
-    let books = newListOfBooks.then(BooksAPI.getAll().then((books) => {this.setState({books: books})}))
-  }
-
   changeCategory = (book, shelf) => {
     if (this.state.books) {
         BooksAPI.update(book,shelf).then(() => {
             book.shelf = shelf;
             this.setState(state => ({
-                books: state.books.filter(b => b.id !== book.id).concat([book])
+              books: state.books.filter(b => b.id !== book.id).concat([book])
             }))
         })
     }
   }
 
   render() {
-    let {books} = this.state
+    const {books} = this.state
   
     return (
     <div className="app">
@@ -73,8 +68,8 @@ class BooksApp extends React.Component {
       <Route path='/search' render={() => (
         <div>
           <SearchView
-              books={books}
               onChangeCategory={this.changeCategory}
+              books = {this.state.filteredBooks}
           />
         </div>
       )}/>

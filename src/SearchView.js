@@ -15,20 +15,27 @@ class SearchView extends Component {
             if(query){
                 BooksAPI.search(query)
                     .then((books) => { 
-                        if(books == 'error') {
+                        if(books.error) {
                             console.log('Erro!');
                             this.setState({filteredBooks: []})
                         } else {
-                            this.state.filteredBooks = books.filter(function (b) {
-                                if(b === this.props.books){
-                                    b = BooksApp.shelf
-                                } else {
-                                    b.shelf = 'none'
+                            console.log('Sem erro')
+                            console.log(books)
+                            
+                            const {booksApp} = this.state
+                            
+                            this.setState({
+                                filteredBooks: books.filter(b => {
+                                    if (b.id === booksApp.id) {
+                                        b.shelf = booksApp.shelf
+                                    }else {
+                                        b.shelf = 'none'
+                                    }
                                 }
-                                return this.setState(this.state.filteredBooks)
-                            })
+                                )
+                            });
                         }
-                }
+                    }
             )
         }
     }
@@ -36,7 +43,7 @@ class SearchView extends Component {
     render() {
         
         const {onChangeCategory} = this.props
-        const {query, books} = this.state
+        const {query, filteredBooks} = this.state
         
         return (
             <div>
@@ -44,15 +51,16 @@ class SearchView extends Component {
                 <Link className="close-search" to="/">Close</Link>
                 <form>
                     <div className="search-books-input-wrapper">
-                        <input type='text' placeholder='Search books by title or author' value={query} onChange={(event) => this.updateQuery(event)} />
+                        <input type='text' placeholder='Search books by title or author' value={query} 
+                        onChange={(event) => this.updateQuery(event.target.value)} />
                     </div>
                 </form>
             </div>
-           {books.length!==0 && (
+           {filteredBooks.length!==0 && (
                 <div className="search-books-results">
                     <div className="search-books">
                         <ol className="books-grid">
-                            {books.map((book) => (  
+                            {filteredBooks.map((book) => (  
                                 <li key={book.id}>
                                     <Book
                                         onChangeCategory={onChangeCategory}
@@ -64,7 +72,7 @@ class SearchView extends Component {
                     </div>
                 </div>
             )}
-            {(books.length===0 && query.length!==0) && (
+            {(filteredBooks.length===0 && query.length!==0) && (
             <div className="search-results">
                  {`No book found`}
              </div>
